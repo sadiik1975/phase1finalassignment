@@ -1,6 +1,6 @@
 
 
-Anime Book Finder
+
 Anime Book Finder is a web application designed to help users search for and discover anime books using an anime-related API. It allows users to browse, filter, and view detailed information about various anime books.
 
 Features
