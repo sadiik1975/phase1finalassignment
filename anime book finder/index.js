@@ -1,50 +1,60 @@
-// Get references to DOM elements
+// DOM References
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const addButton = document.getElementById('addButton');
 const deleteButton = document.getElementById('deleteButton');
-const movieList = document.getElementById('movieList');
+const resetButton = document.getElementById('resetButton');
+const searchResultsContainer = document.querySelector('#searchResults .movie-list');
+const addedMoviesContainer = document.querySelector('#addedMovies .movie-list');
 
-let searchResults = []; // Store fetched search results
-let addedCards = []; // Track added cards
-let selectedCards = []; // Track selected cards for both adding and deleting
+// Data Arrays
+let searchResults = [];
+let addedMovies = [];
+let selectedCards = [];
 
-// Function to fetch anime data from the Jikan API
+// Fetch Anime Data from API
 async function searchAnime() {
-    const query = searchInput.value.trim(); // Get user input
+    const query = searchInput.value.trim();
     if (!query) {
         alert('Please enter a search term');
         return;
     }
 
-    const url = `https://api.jikan.moe/v4/anime?q=${query}`; // Jikan API endpoint
-
+    const url = `https://api.jikan.moe/v4/anime?q=${query}`;
     try {
         const response = await fetch(url);
         const data = await response.json();
         searchResults = data.data; // Store search results
-        displaySearchResults(); // Display results in the DOM
+        displaySearchResults();
     } catch (error) {
         console.error('Error fetching anime data:', error);
-        alert('Failed to fetch anime. Please try again.');
+        alert('Failed to fetch anime data. Please try again.');
     }
 }
 
-// Function to display fetched search results on the page
+// Display Search Results
 function displaySearchResults() {
-    movieList.innerHTML = ''; // Clear current results
-
+    searchResultsContainer.innerHTML = ''; // Clear previous results
     searchResults.forEach(anime => {
-        const movieItem = createMovieCard(anime);
-        movieList.appendChild(movieItem);
+        const movieCard = createMovieCard(anime, 'search');
+        searchResultsContainer.appendChild(movieCard);
     });
 }
 
-// Function to create a movie card
-function createMovieCard(anime) {
-    const movieItem = document.createElement('div');
-    movieItem.classList.add('movie-item');
-    movieItem.setAttribute('data-title', anime.title); // Add unique identifier
+// Display Added Movies
+function displayAddedMovies() {
+    addedMoviesContainer.innerHTML = ''; // Clear previous movies
+    addedMovies.forEach(anime => {
+        const movieCard = createMovieCard(anime, 'added');
+        addedMoviesContainer.appendChild(movieCard);
+    });
+}
+
+// Create Movie Card
+function createMovieCard(anime, type) {
+    const movieCard = document.createElement('div');
+    movieCard.classList.add('movie-item');
+    movieCard.setAttribute('data-title', anime.title);
 
     const movieImage = document.createElement('img');
     movieImage.src = anime.images.jpg.image_url;
@@ -59,77 +69,83 @@ function createMovieCard(anime) {
     movieLink.target = '_blank';
     movieLink.textContent = 'View More';
 
-    movieItem.appendChild(movieImage);
-    movieItem.appendChild(movieTitle);
-    movieItem.appendChild(movieLink);
+    movieCard.appendChild(movieImage);
+    movieCard.appendChild(movieTitle);
+    movieCard.appendChild(movieLink);
 
-    // Add click event to toggle selection
-    movieItem.addEventListener('click', () => toggleSelection(movieItem, anime));
+    // Toggle Selection
+    movieCard.addEventListener('click', () => toggleSelection(movieCard, anime, type));
 
-    return movieItem;
+    return movieCard;
 }
 
-// Function to toggle selection of a card
-function toggleSelection(movieItem, anime) {
+// Toggle Selection
+function toggleSelection(movieCard, anime, type) {
     const isSelected = selectedCards.some(card => card.title === anime.title);
-
     if (isSelected) {
-        // Remove from selected cards
+        // Deselect
         selectedCards = selectedCards.filter(card => card.title !== anime.title);
-        movieItem.classList.remove('selected');
+        movieCard.classList.remove('selected');
     } else {
-        // Add to selected cards
-        selectedCards.push(anime);
-        movieItem.classList.add('selected');
+        // Select
+        selectedCards.push({ anime, type });
+        movieCard.classList.add('selected');
     }
 }
 
-// Function to add selected cards to the added list
+// Add Selected Movies
 function addSelectedCards() {
-    if (selectedCards.length === 0) {
+    const cardsToAdd = selectedCards.filter(card => card.type === 'search');
+    if (cardsToAdd.length === 0) {
         alert('No cards selected to add.');
         return;
     }
 
-    selectedCards.forEach(anime => {
-        // Avoid adding duplicates
-        if (!addedCards.some(card => card.title === anime.title)) {
-            addedCards.push(anime);
-
-            // Add a new card for the added list
-            const addedCard = createMovieCard(anime);
-            movieList.appendChild(addedCard);
+    cardsToAdd.forEach(({ anime }) => {
+        if (!addedMovies.some(movie => movie.title === anime.title)) {
+            addedMovies.push(anime);
         }
     });
 
-    alert('Selected cards have been added!');
-    selectedCards = []; // Clear selection after adding
+    displayAddedMovies();
+    alert('Selected movies have been added!');
+    selectedCards = []; // Clear selection
 }
 
-// Function to delete selected cards (from both added and search results)
+// Delete Selected Movies
 function deleteSelectedCards() {
-    if (selectedCards.length === 0) {
+    const cardsToDelete = selectedCards.filter(card => card.type === 'added');
+    if (cardsToDelete.length === 0) {
         alert('No cards selected to delete.');
         return;
     }
 
-    selectedCards.forEach(card => {
-        // Remove from addedCards
-        addedCards = addedCards.filter(added => added.title !== card.title);
-
-        // Remove from the displayed movie list
-        const movieItems = Array.from(movieList.children);
-        const itemToRemove = movieItems.find(item => item.getAttribute('data-title') === card.title);
-        if (itemToRemove) {
-            movieList.removeChild(itemToRemove);
+    cardsToDelete.forEach(({ anime }) => {
+        addedMovies = addedMovies.filter(movie => movie.title !== anime.title);
+        const movieCard = addedMoviesContainer.querySelector(`[data-title="${anime.title}"]`);
+        if (movieCard) {
+            movieCard.classList.add('fade-out');
+            setTimeout(() => movieCard.remove(), 500); // Wait for fade-out
         }
     });
 
-    alert('Selected cards have been deleted!');
-    selectedCards = []; // Clear selection after deletion
+    alert('Selected movies have been deleted!');
+    selectedCards = []; // Clear selection
 }
 
-// Event listeners for buttons
+// Reset Everything
+function resetEverything() {
+    searchResults = [];
+    addedMovies = [];
+    selectedCards = [];
+    searchResultsContainer.innerHTML = '';
+    addedMoviesContainer.innerHTML = '';
+    searchInput.value = '';
+    alert('All data has been reset!');
+}
+
+// Event Listeners
 searchButton.addEventListener('click', searchAnime);
 addButton.addEventListener('click', addSelectedCards);
 deleteButton.addEventListener('click', deleteSelectedCards);
+resetButton.addEventListener('click', resetEverything);

@@ -3,22 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Movie Search</title>
+    <title>Anime Movie App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="app">
         <h1>Anime Movie Search</h1>
+        <!-- Search Bar -->
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for an anime movie...">
             <button id="searchButton">Search</button>
         </div>
+        <!-- Action Buttons -->
         <div class="action-buttons">
             <button id="addButton">Add</button>
             <button id="deleteButton">Delete</button>
+            <button id="resetButton">Reset</button> <!-- Reset Button -->
         </div>
-        <div id="movieList" class="movie-list">
-            <!-- Movie cards will appear here -->
+        <!-- Search Results and Added Movies -->
+        <div id="resultsWrapper">
+            <!-- Search Results Section -->
+            <div id="searchResults" class="search-results">
+                <h2>Search Results</h2>
+                <div class="movie-list">
+                    <!-- Dynamically populated search results go here -->
+                </div>
+            </div>
+            <!-- Added Movies Section -->
+            <div id="addedMovies" class="added-movies">
+                <h2>Added Movies</h2>
+                <div class="movie-list">
+                    <!-- Dynamically added movies go here -->
+                </div>
+            </div>
         </div>
     </div>
     <script src="index.js"></script>
