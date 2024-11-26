@@ -1,0 +1,39 @@
+{
+    "movies": [
+        {
+            "id": 1,
+            "title": "Spirited Away",
+            "year": 2001,
+            "director": "Hayao Miyazaki",
+            "image": "https://example.com/spirited-away.jpg"
+        },
+        {
+            "id": 2,
+            "title": "My Neighbor Totoro",
+            "year": 1988,
+            "director": "Hayao Miyazaki",
+            "image": "https://example.com/my-neighbor-totoro.jpg"
+        },
+        {
+            "id": 3,
+            "title": "Akira",
+            "year": 1988,
+            "director": "Katsuhiro Otomo",
+            "image": "https://example.com/akira.jpg"
+        },
+        {
+            "id": 4,
+            "title": "Ghost in the Shell",
+            "year": 1995,
+            "director": "Mamoru Oshii",
+            "image": "https://example.com/ghost-in-the-shell.jpg"
+        },
+        {
+            "id": 5,
+            "title": "Your Name",
+            "year": 2016,
+            "director": "Makoto Shinkai",
+            "image": "https://example.com/your-name.jpg"
+        }
+    ]
+}

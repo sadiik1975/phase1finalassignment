@@ -1,3 +1,28 @@
+
+/* Movie card padding  */
+.movie-item {
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background: #f9f9f9;
+    transition: 0.3s;
+    margin-bottom: 20px;
+}
+/* movie card box */
+.movie-item img {
+    max-width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+/* movie card hoover */
+.movie-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
 /* General Body Styling */
 body {
     font-family: Arial, sans-serif;
